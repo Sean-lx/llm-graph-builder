@@ -35,6 +35,10 @@ from fastapi.middleware.gzip import GZipMiddleware
 import time
 import gc
 
+import ssl
+
+ssl._create_default_https_context = ssl._create_unverified_context
+
 logger = CustomLogger()
 CHUNK_DIR = os.path.join(os.path.dirname(__file__), "chunks")
 MERGED_DIR = os.path.join(os.path.dirname(__file__), "merged_files")
