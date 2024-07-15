@@ -87,7 +87,7 @@ def load_embedding_model(embedding_model_name: str):
         logging.info(f"Embedding: Using Vertex AI Embeddings , Dimension:{dimension}")
     else:
         embeddings = SentenceTransformerEmbeddings(
-            model_name="all-MiniLM-L6-v2"#, cache_folder="/embedding_model"
+            model_name=embedding_model_name#, cache_folder="/embedding_model"
         )
         dimension = 384
         logging.info(f"Embedding: Using SentenceTransformer , Dimension:{dimension}")
