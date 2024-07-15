@@ -2,6 +2,23 @@
 
 Creating knowledge graphs from unstructured data
 
+# How it works
+
+1. Uploaded Sources are stored as Document nodes in the graph
+
+2. Each document (type) is loaded with the LangChain Loaders
+
+3. The content is split into Chunks
+
+4. Chunks are stored in the graph and connected to the Document and to each other for advanced RAG patterns
+
+5. Highly similar Chunks are connected with a SIMILAR relationship to form a kNN Graph
+
+6. Embeddings are computed and stored in the Chunks and Vector index
+
+7. Using the llm-graph-transformer or diffbot-graph-transformer entities and relationships are extracted from the text
+
+8. Entities and relationships are stored in the graph and connected to the originating Chunks
 
 # LLM Graph Builder
 
