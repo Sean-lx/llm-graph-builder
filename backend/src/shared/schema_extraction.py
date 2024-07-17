@@ -15,14 +15,14 @@ PROMPT_TEMPLATE_WITH_SCHEMA = (
     "Generate the generalized graph schema based on input text. Identify key entities and their relationships and "
     "provide a generalized label for the overall context"
     "Schema representations formats can contain extra symbols, quotes, or comments. Ignore all that extra markup."
-    "Only return the string types for nodes and relationships. Don't return attributes. Don't add any annotations. Don't add any explanations."
+    "Only return the string types for nodes and relationships. Don't return attributes."
 )
 
 PROMPT_TEMPLATE_WITHOUT_SCHEMA = (
     "You are an expert in schema extraction, especially for deriving graph schema information from example texts."
     "Analyze the following text and extract only the types of entities and relationships from the example prose."
     "Don't return any actual entities like people's names or instances of organizations."
-    "Only return the string types for nodes and relationships. Don't return attributes. Don't add any annotations. Don't add any explanations."
+    "Only return the string types for nodes and relationships. Don't return attributes."
 )
 
 def schema_extraction_from_text(input_text:str, model:str, is_schema_description_cheked:bool):
