@@ -559,6 +559,7 @@ async def cancelled_job(uri=Form(None), userName=Form(None), password=Form(None)
 async def populate_graph_schema(input_text=Form(None), model=Form(None), is_schema_description_checked=Form(None)):
     try:
         result = populate_graph_schema_from_text(input_text, model, is_schema_description_checked)
+        logging.info('Successfully populated graph schema:'+str(result))
         return create_api_response('Success',data=result)
     except Exception as e:
         job_status = "Failed"
