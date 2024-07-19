@@ -37,7 +37,7 @@ export const llms =
     ? process.env.LLM_MODELS?.split(',')
     : [
         'diffbot',
-        'openai-gpt-3.5',
+        'openai-gpt-4o-mini',
         'openai-gpt-4o',
         'gemini-1.0-pro',
         'gemini-1.5-pro',
@@ -50,11 +50,11 @@ export const llms =
         'bedrock_claude_3_5_sonnet',
       ];
 
-export const defaultLLM = llms?.includes('openai-gpt-3.5')
-  ? 'openai-gpt-3.5'
+export const defaultLLM = llms?.includes('openai-gpt-4o-mini')
+  ? 'openai-gpt-4o-mini'
   : llms?.includes('gemini-1.0-pro')
   ? 'gemini-1.0-pro'
-  : 'diffbot';
+  : 'ollama_llama3';
 export const chatModes =
   process.env?.CHAT_MODES?.trim() != '' ? process.env.CHAT_MODES?.split(',') : ['vector', 'graph', 'graph+vector'];
 export const chunkSize = process.env.CHUNK_SIZE ? parseInt(process.env.CHUNK_SIZE) : 1 * 1024 * 1024;

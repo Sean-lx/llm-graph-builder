@@ -78,7 +78,7 @@ def get_llm(model: str,max_tokens=1000) -> Any:
     """Retrieve the specified language model based on the model name."""
 
     model_versions = {
-        "openai-gpt-3.5": "gpt-3.5-turbo-16k",
+        "openai-gpt-4o-mini": "gpt-4o-mini",
         "gemini-1.0-pro": "gemini-1.0-pro-001",
         "gemini-1.5-pro": "gemini-1.5-pro-preview-0409",
         "openai-gpt-4": "gpt-4-0125-preview",

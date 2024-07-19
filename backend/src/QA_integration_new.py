@@ -222,7 +222,7 @@ def clear_chat_history(graph,session_id):
 def setup_chat(model, graph, session_id, document_names,retrieval_query):
     start_time = time.time()
     if model in ["diffbot"]:
-        model = "openai-gpt-4o"
+        model = "openai-gpt-4o-mini"
     llm,model_name = get_llm(model)
     logging.info(f"Model called in chat {model} and model version is {model_name}")
     retriever = get_neo4j_retriever(graph=graph,retrieval_query=retrieval_query,document_names=document_names)

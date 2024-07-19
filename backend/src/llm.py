@@ -6,6 +6,11 @@ from langchain_google_vertexai import ChatVertexAI
 from langchain_groq import ChatGroq
 from langchain_google_vertexai import HarmBlockThreshold, HarmCategory
 from langchain_experimental.graph_transformers.diffbot import DiffbotGraphTransformer
+from langchain_core.prompts import (
+    ChatPromptTemplate,
+    HumanMessagePromptTemplate,
+    PromptTemplate,
+)
 import concurrent.futures
 from concurrent.futures import ThreadPoolExecutor
 from langchain_experimental.graph_transformers import LLMGraphTransformer
@@ -89,7 +94,13 @@ def get_llm(model_version: str):
 
     elif "ollama" in model_version:
         model_name, base_url = env_value.split(",")
-        llm = ChatOllama(base_url=base_url, model=model_name)
+        # llm = ChatOpenAI(
+        #     api_key="ollama",
+        #     model=model_name,
+        #     temperature=0,
+        #     base_url=base_url + "/v1",
+        # )
+        llm = ChatOllama(base_url=base_url, model=model_name, temperature=0)
 
     else:
         model_name = "diffbot"
@@ -135,12 +146,15 @@ def get_graph_document_list(
 ):
     futures = []
     graph_document_list = []
+    prompt: ChatPromptTemplate | None = None
     if llm.get_name() == "ChatOllama":
         node_properties = False
+        prompt = get_ollama_model_transformer_prompt()
     else:
         node_properties = ["description"]
     llm_transformer = LLMGraphTransformer(
         llm=llm,
+        prompt=prompt,
         node_properties=node_properties,
         allowed_nodes=allowedNodes,
         allowed_relationships=allowedRelationship,
@@ -168,3 +182,95 @@ def get_graph_from_llm(model, chunkId_chunkDoc_list, allowedNodes, allowedRelati
         llm, combined_chunk_document_list, allowedNodes, allowedRelationship
     )
     return graph_document_list
+
+def get_ollama_model_transformer_prompt() -> ChatPromptTemplate :
+    system_prompt = """
+    You are a top-tier algorithm designed for extracting information in structured formats to build a knowledge graph. 
+    Your task is to identify  the entities and relations requested with the user prompt from a given text.  
+    """
+
+    human_prompt = """
+    Below are a number of examples of text and their extracted entities and relationships.
+    # Example 1
+    # text: 
+    '''
+    Adam is a software engineer in Microsoft since 2009, and last year he got an award as the Best Talent.
+    '''
+    # output:
+    [
+        {{
+            "head": "Adam",
+            "head_type": "Person",
+            "relation": "WORKS_FOR",
+            "tail": "Microsoft",
+            "tail_type": "Company",
+        }},
+        {{
+            "head": "Adam",
+            "head_type": "Person",
+            "relation": "HAS_AWARD",
+            "tail": "Best Talent",
+            "tail_type": "Award",
+        }}
+    ]
+
+    # Example 2
+    # text:
+    '''
+    Microsoft is a tech company that provide several products such as Microsoft Word. 
+    Microsoft Word is a lightweight app that accessible offline.
+    '''
+    # output:
+    [
+        {{
+            "head": "Microsoft Word",
+            "head_type": "Product",
+            "relation": "PRODUCED_BY",
+            "tail": "Microsoft",
+            "tail_type": "Company",
+        }},
+        {{
+            "head": "Microsoft Word",
+            "head_type": "Product",
+            "relation": "HAS_CHARACTERISTIC",
+            "tail": "lightweight app",
+            "tail_type": "Characteristic",
+        }},
+        {{
+            "head": "Microsoft Word",
+            "head_type": "Product",
+            "relation": "HAS_CHARACTERISTIC",
+            "tail": "accessible offline",
+            "tail_type": "Characteristic",
+        }}
+    ]
+
+    # Important Notes:
+    1. You must generate the output in a JSON list containing JSON objects. Each object should have the keys: "head", "head_type", "relation", "tail", and "tail_type". 
+    2. When extracting entities, it's vital to ensure consistency. If an entity, such as "John Doe", is mentioned multiple times in the text but is referred to by different names or pronouns (e.g., "Joe", "he"), always use the most complete identifier for that entity. The knowledge graph should be coherent and easily understandable, so maintaining consistency in entity references is crucial.
+    3. The value strings of the keys "head" and "tail" must be in the same language as the input text.
+    4. Do not return any null values for the JSON object.
+    5. Do not return any empty strings for the JSON object.
+    6. Do not return any entity or relation that is not found in the text.
+    7. Do not add any explanations. Just return the pure json list.
+
+    Follow the instructions above strictly.
+    Extract entities and relations from the given input text:
+    # text:
+    '''
+    {input}
+    '''
+    """
+
+    return ChatPromptTemplate.from_messages(
+        [
+            (
+                "system",
+                system_prompt,
+            ),
+            (
+                "human",
+                human_prompt,
+            ),
+        ]
+    )
