@@ -246,22 +246,14 @@ def get_ollama_model_transformer_prompt() -> ChatPromptTemplate :
     ]
 
     # Important Notes:
-    1. You must generate the output in a JSON list containing JSON objects. Each object should have the keys: "head", "head_type", "relation", "tail", and "tail_type". 
-    2. When extracting entities, it's vital to ensure consistency. If an entity, such as "John Doe", is mentioned multiple times in the text but is referred to by different names or pronouns (e.g., "Joe", "he"), always use the most complete identifier for that entity. The knowledge graph should be coherent and easily understandable, so maintaining consistency in entity references is crucial.
-    3. Ensure you use available types for node labels. Ensure you use basic or elementary types for node labels. For example, when you identify an entity representing a person, always label it as **'person'**. Avoid using more specific terms like 'mathematician' or 'scientist'.
-    4. Never utilize integers as node IDs. Node IDs should be names or human-readable identifiers found in the text.
-    5. Relationships represent connections between entities or concepts. Ensure consistency and generality in relationship types when constructing knowledge graphs. Instead of using specific and momentary types such as 'BECAME_PROFESSOR', use more general and timeless relationship types like 'PROFESSOR'. Make sure to use general and timeless relationship types!
+    1. Generate the output in a JSON list containing JSON objects. Each object should have the keys: "head", "head_type", "relation", "tail", and "tail_type". 
+    2. Ensure you use available types for node labels. Ensure you use basic or elementary types for node labels. For example, when you identify an entity representing a person, always label it as 'Person'. Avoid using more specific terms like 'mathematician' or 'scientist'.
+    3. Never utilize integers as node IDs. Node IDs should be names or human-readable identifiers found in the text.
+    4. Relationships represent connections between entities or concepts. Ensure consistency and generality in relationship types when constructing knowledge graphs. Instead of using specific and momentary types such as 'BECAME_PROFESSOR', use more general and timeless relationship types like 'PROFESSOR'. Make sure to use general and timeless relationship types!
+    5. If an entity, such as "John Doe", is mentioned multiple times in the text but is referred to by different names or pronouns (e.g., "Joe", "he"), always use the most complete identifier for that entity throughout the knowledge graph. In this example, use "John Doe" as the entity ID.
     6. The value strings of the keys "head" and "tail" must be in the same language as the input text.
-    7. Do not return any null values for the JSON object.
-    8. Do not return any empty strings for the JSON object.
-    9. Do not return any entity or relation that is not found in the text.
-    10. Do not add any explanations. Just return the pure json list.
-
-    # Step by step instructions:
-    1. Extract named entities from the text first.
-    2. Extract relationships between entities from the text.
-    3. Eliminate any unavailable entities and relationships.
-    4. Generate the output in a JSON list containing JSON objects.
+    7. Do not return any entity or relation that is not explicitly mentioned in the text.
+    8. Do not add any explanations. Just return the pure json list.
 
     Follow the instructions above strictly.
     Extract entities and relations from the given input text:
