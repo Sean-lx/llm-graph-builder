@@ -149,7 +149,7 @@ def get_graph_document_list(
     prompt: ChatPromptTemplate | None = None
     if llm.get_name() == "ChatOllama":
         node_properties = False
-        prompt = get_ollama_model_transformer_prompt()
+        # prompt = get_ollama_model_transformer_prompt()
     else:
         node_properties = ["description"]
     llm_transformer = LLMGraphTransformer(
