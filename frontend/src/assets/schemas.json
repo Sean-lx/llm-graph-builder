@@ -226,5 +226,33 @@
       "RESULTED_IN"
     ],
     "schema": "healthcare"
+  },
+  {
+    "labels": [
+      "Action",
+      "Behavior",
+      "Book",
+      "Character",
+      "Conversation",
+      "Concept",
+      "Date",
+      "Dialogue",
+      "Document",
+      "Event",
+      "Job",
+      "Location",
+      "Movement",
+      "Object",
+      "Organization",
+      "Person",
+      "Place",
+      "Speech",
+      "Task",
+      "Work"
+    ],
+    "relationshipTypes": [
+      
+    ],
+    "schema": "fiction"
   }
 ]
