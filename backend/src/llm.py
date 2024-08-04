@@ -5,7 +5,7 @@ from langchain_openai import ChatOpenAI, AzureChatOpenAI
 from langchain_google_vertexai import ChatVertexAI
 from langchain_groq import ChatGroq
 from langchain_google_vertexai import HarmBlockThreshold, HarmCategory
-from langchain_experimental.graph_transformers.diffbot import DiffbotGraphTransformer
+from src.graph_transformers import DiffbotGraphTransformer
 from langchain_core.prompts import (
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
@@ -13,7 +13,7 @@ from langchain_core.prompts import (
 )
 import concurrent.futures
 from concurrent.futures import ThreadPoolExecutor
-from langchain_experimental.graph_transformers import LLMGraphTransformer
+from src.graph_transformers import LLMGraphTransformer
 from langchain_anthropic import ChatAnthropic
 from langchain_fireworks import ChatFireworks
 from langchain_aws import ChatBedrock
