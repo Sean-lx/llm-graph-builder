@@ -1,4 +1,4 @@
-from langchain_text_splitters import TokenTextSplitter
+from langchain_text_splitters import TokenTextSplitter, RecursiveCharacterTextSplitter
 from langchain.docstore.document import Document
 from langchain_community.graphs import Neo4jGraph
 import logging
@@ -24,8 +24,26 @@ class CreateChunksofDocument:
             A list of chunks each of which is a langchain Document.
         """
         logging.info("Split file into smaller chunks")
+
         # number_of_chunks_allowed = int(os.environ.get('NUMBER_OF_CHUNKS_ALLOWED'))
-        text_splitter = TokenTextSplitter(chunk_size=200, chunk_overlap=20)
+
+        # text_splitter = TokenTextSplitter(chunk_size=200, chunk_overlap=20)
+
+        separators=[
+            "\n\n",
+            "\n",
+            " ",
+            ".",
+            ",",
+            "\u200b",  # Zero-width space
+            "\uff0c",  # Fullwidth comma
+            "\u3001",  # Ideographic comma
+            "\uff0e",  # Fullwidth full stop
+            "\u3002",  # Ideographic full stop
+            "",
+        ]
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50, separators=separators)
+
         if 'page' in self.pages[0].metadata:
             chunks = []
             for i, document in enumerate(self.pages):
