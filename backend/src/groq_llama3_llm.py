@@ -5,7 +5,7 @@ import logging
 import concurrent.futures
 from concurrent.futures import ThreadPoolExecutor
 from typing import List
-from langchain_experimental.graph_transformers import LLMGraphTransformer
+from src.graph_transformers import LLMGraphTransformer
 from langchain_core.documents import Document
 from src.llm import get_combined_chunks, get_llm
 
