@@ -94,12 +94,6 @@ def get_llm(model_version: str):
 
     elif "ollama" in model_version:
         model_name, base_url = env_value.split(",")
-        # llm = ChatOpenAI(
-        #     api_key="ollama",
-        #     model=model_name,
-        #     temperature=0,
-        #     base_url=base_url + "/v1",
-        # )
         llm = ChatOllama(base_url=base_url, model=model_name, temperature=0)
 
     else:
@@ -149,7 +143,6 @@ def get_graph_document_list(
     prompt: ChatPromptTemplate | None = None
     if llm.get_name() == "ChatOllama":
         node_properties = False
-        # prompt = get_ollama_model_transformer_prompt()
     else:
         node_properties = ["description"]
     llm_transformer = LLMGraphTransformer(
@@ -182,96 +175,3 @@ def get_graph_from_llm(model, chunkId_chunkDoc_list, allowedNodes, allowedRelati
         llm, combined_chunk_document_list, allowedNodes, allowedRelationship
     )
     return graph_document_list
-
-def get_ollama_model_transformer_prompt() -> ChatPromptTemplate :
-    system_prompt = """
-    You are a top-tier algorithm designed for extracting information from unstructured texts into structured formats to build a knowledge graph. 
-    Your task is to identify the entities and relations requested with the user prompt from a given text. 
-    """
-
-    human_prompt = """
-    Below are a number of examples of text and their extracted entities and relationships.
-    # Example 1
-    # text: 
-    '''
-    Adam is a software engineer in Microsoft since 2009, and last year he got an award as the Best Talent.
-    '''
-    # output:
-    [
-        {{
-            "head": "Adam",
-            "head_type": "Person",
-            "relation": "WORKS_FOR",
-            "tail": "Microsoft",
-            "tail_type": "Company",
-        }},
-        {{
-            "head": "Adam",
-            "head_type": "Person",
-            "relation": "HAS_AWARD",
-            "tail": "Best Talent",
-            "tail_type": "Award",
-        }}
-    ]
-
-    # Example 2
-    # text:
-    '''
-    Microsoft is a tech company that provide several products such as Microsoft Word. 
-    Microsoft Word is a lightweight app that accessible offline.
-    '''
-    # output:
-    [
-        {{
-            "head": "Microsoft Word",
-            "head_type": "Product",
-            "relation": "PRODUCED_BY",
-            "tail": "Microsoft",
-            "tail_type": "Company",
-        }},
-        {{
-            "head": "Microsoft Word",
-            "head_type": "Product",
-            "relation": "HAS_CHARACTERISTIC",
-            "tail": "lightweight app",
-            "tail_type": "Characteristic",
-        }},
-        {{
-            "head": "Microsoft Word",
-            "head_type": "Product",
-            "relation": "HAS_CHARACTERISTIC",
-            "tail": "accessible offline",
-            "tail_type": "Characteristic",
-        }}
-    ]
-
-    # Important Notes:
-    1. Generate the output in a JSON list containing JSON objects. Each object should have the keys: "head", "head_type", "relation", "tail", and "tail_type". 
-    2. Ensure you use available types for node labels. Ensure you use basic or elementary types for node labels. For example, when you identify an entity representing a person, always label it as 'Person'. Avoid using more specific terms like 'mathematician' or 'scientist'.
-    3. Never utilize integers as node IDs. Node IDs should be names or human-readable identifiers found in the text.
-    4. Relationships represent connections between entities or concepts. Ensure consistency and generality in relationship types when constructing knowledge graphs. Instead of using specific and momentary types such as 'BECAME_PROFESSOR', use more general and timeless relationship types like 'PROFESSOR'. Make sure to use general and timeless relationship types!
-    5. If an entity, such as "John Doe", is mentioned multiple times in the text but is referred to by different names or pronouns (e.g., "Joe", "he"), always use the most complete identifier for that entity throughout the knowledge graph. In this example, use "John Doe" as the entity ID.
-    6. The value strings of the keys "head" and "tail" must be in the same language as the input text.
-    7. Do not return any entity or relation that is not explicitly mentioned in the text.
-    8. Do not add any explanations. Just return the pure json list.
-
-    Follow the instructions above strictly.
-    Extract entities and relations from the given input text:
-    # text:
-    '''
-    {input}
-    '''
-    """
-
-    return ChatPromptTemplate.from_messages(
-        [
-            (
-                "system",
-                system_prompt,
-            ),
-            (
-                "human",
-                human_prompt,
-            ),
-        ]
-    )

@@ -203,9 +203,7 @@ class UnstructuredRelation(BaseModel):
 def create_unstructured_prompt(
     node_labels: Optional[List[str]] = None, rel_types: Optional[List[str]] = None
 ) -> ChatPromptTemplate:
-    node_labels_str = str(node_labels) if node_labels else ""
-    rel_types_str = str(rel_types) if rel_types else ""
-    example_str = ["""# text: 
+    example_arr = ["""# text: 
 '''
 Adam is a software engineer in Microsoft since 2009, and last year he got an award as the Best Talent.
 '''
@@ -265,29 +263,19 @@ Microsoft Word is a lightweight app that accessible offline.
         "text. You must generate the output in a JSON format containing a list "
         'with JSON objects. Each object should have the keys: "head", '
         '"head_type", "relation", "tail", and "tail_type".',
-        f'The "head_type" key must contain the type of the extracted head entity, '
-        f"which must be one of the types from {node_labels_str}."
-        if node_labels
-        else "",
-        f'The "relation" key must contain the type of relation between the "head" '
-        f'and the "tail", which must be one of the relations from {rel_types_str}.'
-        if rel_types
-        else "",
-        f'The "tail" key must represent the text of an extracted entity which is '
-        f'the tail of the relation, and the "tail_type" key must contain the type '
-        f"of the tail entity from {node_labels_str}."
-        if node_labels
-        else "",
-        """# Important Notes:
-1. Generate the output in a JSON list containing JSON objects. Each object should have the keys: "head", "head_type", "relation", "tail", and "tail_type". 
-2. Ensure you use available types for node labels. Ensure you use basic or elementary types for node labels. For example, when you identify an entity representing a person, always label it as 'Person'. Avoid using more specific terms like 'mathematician' or 'scientist'.
-3. Never utilize integers as node IDs. Node IDs should be names or human-readable identifiers found in the text.
-4. Relationships represent connections between entities or concepts. Ensure consistency and generality in relationship types when constructing knowledge graphs. Instead of using specific and momentary types such as 'BECAME_PROFESSOR', use more general and timeless relationship types like 'PROFESSOR'. Make sure to use general and timeless relationship types!
-5. If an entity, such as "John Doe", is mentioned multiple times in the text but is referred to by different names or pronouns (e.g., "Joe", "he"), always use the most complete identifier for that entity throughout the knowledge graph. In this example, use "John Doe" as the entity ID.
-6. The value strings of the keys "head" and "tail" must be in the same language as the input text.
-7. Do not return any entity or relation that is not explicitly mentioned in the text.
-8. Do not add any explanations. Just return the pure json list.
-""" 
+
+        "# Important Notes:"
+        "1. Ensure you use basic or elementary types for node labels."
+        "- For example, when you identify an entity representing a person, always label it as 'Person'."
+        "- Avoid using more specific terms like 'mathematician' or 'scientist'."
+        "2. Never utilize integers as node IDs. Node IDs should be names or human-readable identifiers found in the text."
+        "3. Relationships represent connections between entities or concepts."
+        "- Ensure consistency and generality in relationship types when constructing knowledge graphs."
+        "- Instead of using specific and momentary types such as 'BECAME_PROFESSOR', use more general and timeless relationship types like 'PROFESSOR'.",
+        "- Make sure to use general and timeless relationship types!"
+        "4. The value strings of the keys 'head' and 'tail' must be in the same language as the input text."
+        "5. Do not return any entity or relation that is not explicitly mentioned in the given text."
+        "6. Do not add any explanations. Just return the pure json list.",
     ]
 
     system_prompt = "\n".join(filter(None, base_string_parts))
@@ -296,27 +284,31 @@ Microsoft Word is a lightweight app that accessible offline.
     parser = JsonOutputParser(pydantic_object=UnstructuredRelation)
 
     human_prompt = PromptTemplate(
-        template="""Based on the following example, extract entities and 
+        template="""Based on the given examples, extract entities and 
 relations from the provided text.\n\n
-Use the following entity types, don't use other entity that is not defined below:
+Use the following entity types if exist, don't use other entity that is not defined below:
 # ENTITY TYPES:
-{node_labels}
+{node_labels}\n
 
-Use the following relation types, don't use other relation that is not defined below:
+Use the following relation types if exist, don't use other relation that is not defined below:
 # RELATION TYPES:
-{rel_types}
+{rel_types}\n
 
-Below are a number of examples of text and their extracted entities and relationships.
-{example_str}
+Below are a number of examples of text and their extracted entities and relationships:
+{example_arr}\n
 
-For the following text, extract entities and relations as in the provided example.
-{format_instructions}\nText: {input}""",
+Return JSON object in the following schema:
+{format_instructions}\n
+
+For the following text, extract entities and relations as in the given examples.
+Text: {input}
+""",
         input_variables=["input"],
         partial_variables={
             "format_instructions": parser.get_format_instructions(),
             "node_labels": node_labels,
             "rel_types": rel_types,
-            "example_str": example_str,
+            "example_arr": example_arr,
         },
     )
 
