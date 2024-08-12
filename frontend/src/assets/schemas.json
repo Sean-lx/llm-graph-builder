@@ -230,6 +230,7 @@
   {
     "labels": [
       "Action",
+      "Author",
       "Behavior",
       "Book",
       "Character",
@@ -246,6 +247,7 @@
       "Organization",
       "Person",
       "Place",
+      "Publisher",
       "Speech",
       "Task",
       "Work"
