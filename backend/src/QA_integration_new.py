@@ -39,7 +39,7 @@ EMBEDDING_MODEL = os.getenv('EMBEDDING_MODEL')
 EMBEDDING_FUNCTION , _ = load_embedding_model(EMBEDDING_MODEL)
 
 
-def get_neo4j_retriever(graph, retrieval_query,document_names,index_name="vector", search_k=CHAT_SEARCH_KWARG_K, score_threshold=CHAT_SEARCH_KWARG_SCORE_THRESHOLD):
+def get_neo4j_retriever(graph, retrieval_query, document_names, index_name="vector", search_k=CHAT_SEARCH_KWARG_K, score_threshold=CHAT_SEARCH_KWARG_SCORE_THRESHOLD):
     try:
         neo_db = Neo4jVector.from_existing_index(
             embedding=EMBEDDING_FUNCTION,
@@ -60,7 +60,7 @@ def get_neo4j_retriever(graph, retrieval_query,document_names,index_name="vector
         logging.error(f"Error retrieving Neo4jVector index '{index_name}' or creating retriever: {e}")
         return None 
     
-def create_document_retriever_chain(llm,retriever):
+def create_document_retriever_chain(llm, retriever):
     query_transform_prompt = ChatPromptTemplate.from_messages(
         [
             ("system", QUESTION_TRANSFORM_TEMPLATE),
@@ -107,7 +107,7 @@ def create_neo4j_chat_message_history(graph, session_id):
         logging.error(f"Error creating Neo4jChatMessageHistory: {e}")
     return None 
 
-def format_documents(documents,model):
+def format_documents(documents, model):
     prompt_token_cutoff = 4
     for models,value in CHAT_TOKEN_CUT_OFF.items():
         if model in models:
@@ -133,7 +133,7 @@ def format_documents(documents,model):
 
     return "\n\n".join(formatted_docs), sources
 
-def get_rag_chain(llm,system_template=CHAT_SYSTEM_TEMPLATE):
+def get_rag_chain(llm, system_template=CHAT_SYSTEM_TEMPLATE):
     question_answering_prompt = ChatPromptTemplate.from_messages(
     [
         ("system", system_template),
@@ -165,7 +165,7 @@ def get_sources_and_chunks(sources_used, docs):
     }
     return result
 
-def summarize_messages(llm,history,stored_messages):
+def summarize_messages(llm,history, stored_messages):
     if len(stored_messages) == 0:
         return False
     summarization_prompt = ChatPromptTemplate.from_messages(
@@ -188,7 +188,7 @@ def summarize_messages(llm,history,stored_messages):
     return True
 
 
-def get_total_tokens(ai_response,llm):
+def get_total_tokens(ai_response, llm):
     
     if isinstance(llm,(ChatOpenAI,AzureChatOpenAI,ChatFireworks,ChatGroq)):
         total_tokens = ai_response.response_metadata['token_usage']['total_tokens']
@@ -207,7 +207,7 @@ def get_total_tokens(ai_response,llm):
     return total_tokens
 
 
-def clear_chat_history(graph,session_id):
+def clear_chat_history(graph, session_id):
     history = Neo4jChatMessageHistory(
         graph=graph,
         session_id=session_id
@@ -219,7 +219,7 @@ def clear_chat_history(graph,session_id):
             "user": "chatbot"
             }
 
-def setup_chat(model, graph, session_id, document_names,retrieval_query):
+def setup_chat(model, graph, session_id, document_names, retrieval_query):
     start_time = time.time()
     if model in ["diffbot"]:
         model = "openai-gpt-4o-mini"
@@ -311,7 +311,7 @@ def get_graph_response(graph_chain, question):
     except Exception as e:
         logging.error("An error occurred while getting the graph response : {e}")
 
-def QA_RAG(graph, model, question, document_names,session_id, mode):
+def QA_RAG(graph, model, question, document_names, session_id, mode):
     try:
         logging.info(f"Chat Mode : {mode}")
         history = create_neo4j_chat_message_history(graph, session_id)
