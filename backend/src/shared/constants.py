@@ -21,9 +21,9 @@ CHAT_SEARCH_KWARG_SCORE_THRESHOLD = 0.7
 CHAT_DOC_SPLIT_SIZE = 3000
 CHAT_EMBEDDING_FILTER_SCORE_THRESHOLD = 0.10
 CHAT_TOKEN_CUT_OFF = {
-     ("azure_ai_gpt_35","gemini-1.0-pro","gemini-1.5-pro","groq-llama3",'groq_llama3_70b','anthropic_claude_3_5_sonnet','fireworks_llama_v3_70b','bedrock_claude_3_5_sonnet', ) : 4, 
-     ("openai-gpt-4","diffbot" ,'azure_ai_gpt_4o',"openai-gpt-4o","openai-gpt-4o-mini") : 28,
-     ("ollama_llama3") : 2  
+      ("azure_ai_gpt_35","gemini-1.0-pro","gemini-1.5-pro","groq-llama3",'groq_llama3_70b','anthropic_claude_3_5_sonnet','fireworks_llama_v3_70b','bedrock_claude_3_5_sonnet', ) : 4, 
+      ("diffbot",'azure_ai_gpt_4o',"openai-gpt-4o","openai-gpt-4o-mini") : 28,
+      ("ollama_llama3") : 2  
 } 
 
 
@@ -80,12 +80,12 @@ WITH node AS chunk, score
 MATCH (chunk)-[:PART_OF]->(d:Document)
 WITH d, collect(distinct {chunk: chunk, score: score}) as chunks, avg(score) as avg_score
 WITH d, avg_score, 
-     [c in chunks | c.chunk.text] as texts, 
-     [c in chunks | {id: c.chunk.id, score: c.score}] as chunkdetails
+      [c in chunks | c.chunk.text] as texts, 
+      [c in chunks | {id: c.chunk.id, score: c.score}] as chunkdetails
 WITH d, avg_score, chunkdetails,
-     apoc.text.join(texts, "\n----\n") as text
+      apoc.text.join(texts, "\n----\n") as text
 RETURN text, avg_score AS score, 
-       {source: COALESCE(CASE WHEN d.url CONTAINS "None" THEN d.fileName ELSE d.url END, d.fileName), chunkdetails: chunkdetails} as metadata
+      {source: COALESCE(CASE WHEN d.url CONTAINS "None" THEN d.fileName ELSE d.url END, d.fileName), chunkdetails: chunkdetails} as metadata
 """ 
 
 # VECTOR_GRAPH_SEARCH_QUERY="""
@@ -204,8 +204,8 @@ collect{{ unwind paths as p unwind nodes(p) as n return distinct n}} as nodes, e
 
 // generate metadata and text components for chunks, nodes and relationships
 WITH d, avg_score,
-     [c IN chunks | c.chunk.text] AS texts, 
-     [c IN chunks | {{id: c.chunk.id, score: c.score}}] AS chunkdetails, 
+      [c IN chunks | c.chunk.text] AS texts, 
+      [c IN chunks | {{id: c.chunk.id, score: c.score}}] AS chunkdetails, 
   apoc.coll.sort([n in nodes | 
 
 coalesce(apoc.coll.removeAll(labels(n),['__Entity__'])[0],"") +":"+ 
