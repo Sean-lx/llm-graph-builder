@@ -14,9 +14,9 @@ RETURN collect(distinct r) as rels
 }
 WITH d, collect(distinct chunk) as chunks, apoc.coll.toSet(apoc.coll.flatten(collect(rels))) as rels
 RETURN d as doc, [chunk in chunks | chunk {.*, embedding:null}] as chunks,
-       [r in rels | {startNode:{element_id:elementId(startNode(r)), labels:labels(startNode(r)), properties:{id:startNode(r).id,description:startNode(r).description}},
-                     endNode:{element_id:elementId(endNode(r)), labels:labels(endNode(r)), properties:{id:endNode(r).id,description:endNode(r).description}},
-                     relationship: {type:type(r), element_id:elementId(r)}}] as entities
+    [r in rels | {startNode:{element_id:elementId(startNode(r)), labels:labels(startNode(r)), properties:{id:startNode(r).id,description:startNode(r).description}},
+                endNode:{element_id:elementId(endNode(r)), labels:labels(endNode(r)), properties:{id:endNode(r).id,description:endNode(r).description}},
+                relationship: {type:type(r), element_id:elementId(r)}}] as entities
 """
 
 

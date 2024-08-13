@@ -81,8 +81,8 @@ def update_embeddings(rows, graph):
     for row in rows:
         row['embedding'] = embeddings.embed_query(row['text'])                        
     query = """
-      UNWIND $rows AS row
-      MATCH (e) WHERE elementId(e) = row.elementId
-      CALL db.create.setNodeVectorProperty(e, "embedding", row.embedding)
-      """  
+        UNWIND $rows AS row
+        MATCH (e) WHERE elementId(e) = row.elementId
+        CALL db.create.setNodeVectorProperty(e, "embedding", row.embedding)
+        """  
     return graph.query(query,params={'rows':rows})          

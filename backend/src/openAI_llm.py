@@ -18,7 +18,7 @@ def get_graph_from_OpenAI(model_version, graph, chunkId_chunkDoc_list, allowedNo
     
     llm,model_name = get_llm(model_version)  
     return  get_graph_document_list(llm, combined_chunk_document_list, allowedNodes, allowedRelationship)
-           
+    
         
     
     

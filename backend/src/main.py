@@ -245,19 +245,18 @@ def extract_graph_from_file_gcs(graph, model, gcs_project_id, gcs_bucket_name, g
 
 def processing_source(graph, model, file_name, pages, allowedNodes, allowedRelationship, is_uploaded_from_local=None, merged_file_path=None, uri=None):
   """
-   Extracts a Neo4jGraph from a PDF file based on the model.
-   
-   Args:
-   	 uri: URI of the graph to extract
-     db_name : db_name is database name to connect graph db
-   	 userName: Username to use for graph creation ( if None will use username from config file )
-   	 password: Password to use for graph creation ( if None will use password from config file )
-   	 file: File object containing the PDF file to be used
-   	 model: Type of model to use ('Diffbot'or'OpenAI GPT')
-   
-   Returns: 
-   	 Json response to API with fileName, nodeCount, relationshipCount, processingTime, 
-     status and model as attributes.
+  Extracts a Neo4jGraph from a PDF file based on the model.
+  
+  Args:
+    uri: URI of the graph to extract
+    db_name : db_name is database name to connect graph db
+    userName: Username to use for graph creation ( if None will use username from config file )
+    password: Password to use for graph creation ( if None will use password from config file )
+    file: File object containing the PDF file to be used
+    model: Type of model to use ('Diffbot'or'OpenAI GPT')
+  Returns: 
+    Json response to API with fileName, nodeCount, relationshipCount, processingTime, 
+    status and model as attributes.
   """
   start_time = datetime.now()
   graphDb_data_Access = graphDBdataAccess(graph)
@@ -299,15 +298,15 @@ def processing_source(graph, model, file_name, pages, allowedNodes, allowedRelat
       select_chunks_upto = i+update_graph_chunk_processed
       logging.info(f'Selected Chunks upto: {select_chunks_upto}')
       if len(chunkId_chunkDoc_list) <= select_chunks_upto:
-         select_chunks_upto = len(chunkId_chunkDoc_list)
+        select_chunks_upto = len(chunkId_chunkDoc_list)
       selected_chunks = chunkId_chunkDoc_list[i:select_chunks_upto]
       result = graphDb_data_Access.get_current_status_document_node(file_name)
       is_cancelled_status = result[0]['is_cancelled']
       logging.info(f"Value of is_cancelled : {result[0]['is_cancelled']}")
       if bool(is_cancelled_status) == True:
-         job_status = "Cancelled"
-         logging.info('Exit from running loop of processing file')
-         exit
+        job_status = "Cancelled"
+        logging.info('Exit from running loop of processing file')
+        exit
       else:
         node_count,rel_count = processing_chunks(selected_chunks,graph,file_name,model,allowedNodes,allowedRelationship,node_count, rel_count)
         end_time = datetime.now()
@@ -325,8 +324,8 @@ def processing_source(graph, model, file_name, pages, allowedNodes, allowedRelat
     result = graphDb_data_Access.get_current_status_document_node(file_name)
     is_cancelled_status = result[0]['is_cancelled']
     if bool(is_cancelled_status) == True:
-       logging.info(f'Is_cancelled True at the end extraction')
-       job_status = 'Cancelled'
+      logging.info(f'Is_cancelled True at the end extraction')
+      job_status = 'Cancelled'
     logging.info(f'Job Status at the end : {job_status}')
     end_time = datetime.now()
     processed_time = end_time - start_time
@@ -360,7 +359,7 @@ def processing_source(graph, model, file_name, pages, allowedNodes, allowedRelat
         "success_count" : 1
     }
   else:
-     logging.info('File does not process because it\'s already in Processing status')
+    logging.info('File does not process because it\'s already in Processing status')
 
 def processing_chunks(chunkId_chunkDoc_list,graph,file_name,model,allowedNodes,allowedRelationship, node_count, rel_count):
   #create vector index and update chunk node with embedding
@@ -401,9 +400,9 @@ def get_source_list_from_graph(uri,userName,password,db_name=None):
     file: File object containing the PDF file to be used
     model: Type of model to use ('Diffbot'or'OpenAI GPT')
   Returns:
-   Returns a list of sources that are in the database by querying the graph and
-   sorting the list by the last updated date. 
- """
+    Returns a list of sources that are in the database by querying the graph and
+    sorting the list by the last updated date. 
+  """
   logging.info("Get existing files list from graph")
   graph = Neo4jGraph(url=uri, database=db_name, username=userName, password=password)
   graph_DB_dataAccess = graphDBdataAccess(graph)
@@ -428,8 +427,8 @@ def connection_check(graph):
     password: Password to use for graph creation ( if None will use password from config file )
     db_name: db_name is database name to connect to graph db
   Returns:
-   Returns a status of connection from NEO4j is success or failure
- """
+    Returns a status of connection from NEO4j is success or failure
+  """
   graph_DB_dataAccess = graphDBdataAccess(graph)
   return graph_DB_dataAccess.connection_check()
 
@@ -510,7 +509,7 @@ def get_labels_and_relationtypes(graph):
   graphDb_data_Access = graphDBdataAccess(graph)
   result = graphDb_data_Access.execute_query(query)
   if result is None:
-     result=[]
+    result=[]
   return result
 
 def manually_cancelled_job(graph, filenames, source_types, merged_dir, uri):
@@ -548,5 +547,7 @@ def populate_graph_schema_from_text(text, model, is_schema_description_cheked):
   Returns:
       data (list): list of lebels and relationTypes
   """
+
+  is_schema_description_cheked = str(is_schema_description_cheked).lower() == 'true'
   result = schema_extraction_from_text(text, model, is_schema_description_cheked)
   return {"labels": result.labels, "relationshipTypes": result.relationshipTypes}

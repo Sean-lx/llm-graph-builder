@@ -1,11 +1,11 @@
 MODEL_VERSIONS = {
-        "openai-gpt-4o-mini": "gpt-4o-mini",
-        "openai-gpt-4o": "gpt-4o",
-        "gemini-1.0-pro": "gemini-1.0-pro-001",
-        "gemini-1.5-pro": "gemini-1.5-pro-preview-0514",
-        "diffbot" : "gpt-4o",
-        "groq-llama3" : "llama3-70b-8192"
-      } 
+            "openai-gpt-4o-mini": "gpt-4o-mini",
+            "openai-gpt-4o": "gpt-4o",
+            "gemini-1.0-pro": "gemini-1.0-pro-001",
+            "gemini-1.5-pro": "gemini-1.5-pro-preview-0514",
+            "diffbot" : "gpt-4o",
+            "groq-llama3" : "llama3-70b-8192"
+            } 
 OPENAI_MODELS = ["openai-gpt-4o-mini", "openai-gpt-4o"]
 GEMINI_MODELS = ["gemini-1.0-pro", "gemini-1.5-pro"]
 GROQ_MODELS = ["groq-llama3"]
@@ -206,14 +206,15 @@ collect{{ unwind paths as p unwind nodes(p) as n return distinct n}} as nodes, e
 WITH d, avg_score,
       [c IN chunks | c.chunk.text] AS texts, 
       [c IN chunks | {{id: c.chunk.id, score: c.score}}] AS chunkdetails, 
-  apoc.coll.sort([n in nodes | 
+      apoc.coll.sort([n in nodes | 
 
 coalesce(apoc.coll.removeAll(labels(n),['__Entity__'])[0],"") +":"+ 
 n.id + (case when n.description is not null then " ("+ n.description+")" else "" end)]) as nodeTexts,
-	apoc.coll.sort([r in rels 
-    // optional filter if we limit the node-set
-    // WHERE startNode(r) in nodes AND endNode(r) in nodes 
-  | 
+	apoc.coll.sort([r in rels |
+
+// optional filter if we limit the node-set 
+// WHERE startNode(r) in nodes AND endNode(r) in nodes 
+
 coalesce(apoc.coll.removeAll(labels(startNode(r)),['__Entity__'])[0],"") +":"+ 
 startNode(r).id +
 " " + type(r) + " " + 

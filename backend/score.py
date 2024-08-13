@@ -159,14 +159,14 @@ async def extract_knowledge_graph_from_file(
     PDF file based on the model.
 
     Args:
-          uri: URI of the graph to extract
-          userName: Username to use for graph creation
-          password: Password to use for graph creation
-          file: File object containing the PDF file
-          model: Type of model to use ('Diffbot'or'OpenAI GPT')
+        uri: URI of the graph to extract
+        userName: Username to use for graph creation
+        password: Password to use for graph creation
+        file: File object containing the PDF file
+        model: Type of model to use ('Diffbot'or'OpenAI GPT')
 
     Returns:
-          Nodes and Relations created in Neo4j databse for the pdf file
+        Nodes and Relations created in Neo4j databse for the pdf file
     """
     try:
         graph = create_graph_database_connection(uri, userName, password, database)   
@@ -477,12 +477,12 @@ async def update_extract_status(request:Request, file_name, url, userName, passw
 
 @app.post("/delete_document_and_entities")
 async def delete_document_and_entities(uri=Form(), 
-                                       userName=Form(), 
-                                       password=Form(), 
-                                       database=Form(), 
-                                       filenames=Form(),
-                                       source_types=Form(),
-                                       deleteEntities=Form()):
+                                    userName=Form(), 
+                                    password=Form(), 
+                                    database=Form(), 
+                                    filenames=Form(),
+                                    source_types=Form(),
+                                    deleteEntities=Form()):
     try:
         graph = create_graph_database_connection(uri, userName, password, database)
         graphDb_data_Access = graphDBdataAccess(graph)
@@ -506,7 +506,7 @@ async def delete_document_and_entities(uri=Form(),
 @app.get('/document_status/{file_name}')
 async def get_document_status(file_name, url, userName, password, database):
     decoded_password = decode_password(password)
-   
+
     try:
         if " " in url:
             uri= url.replace(" ","+")

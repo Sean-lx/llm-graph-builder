@@ -25,7 +25,7 @@ def merge_relationship_between_chunk_and_entites(graph: Neo4jGraph, graph_docume
             #Below query is also unable to change as parametrize because we can't make parameter of Label or node type
             #https://neo4j.com/docs/cypher-manual/current/syntax/parameters/
             #graph.query('MATCH(c:Chunk {'+chunk_node_id_set.format(graph_doc_chunk_id['chunk_id'])+'}) MERGE (n:'+ node.type +'{ id: "'+node_id+'"}) MERGE (c)-[:HAS_ENTITY]->(n)')
-          
+
     if batch_data:
         unwind_query = """
                     UNWIND $batch_data AS data
@@ -123,11 +123,11 @@ def create_relation_between_chunks(graph, file_name, chunks: List[Document])->li
         
         if 'page_number' in chunk.metadata:
             chunk_data['page_number'] = chunk.metadata['page_number']
-         
+
         if 'start_time' in chunk.metadata and 'end_time' in chunk.metadata:
             chunk_data['start_time'] = chunk.metadata['start_time']
             chunk_data['end_time'] = chunk.metadata['end_time'] 
-               
+
         batch_data.append(chunk_data)
         
         lst_chunks_including_hash.append({'chunk_id': current_chunk_id, 'chunk_doc': chunk})
@@ -141,7 +141,7 @@ def create_relation_between_chunks(graph, file_name, chunks: List[Document])->li
                 "previous_chunk_id": previous_chunk_id,  # ID of previous chunk
                 "current_chunk_id": current_chunk_id
             })
-          
+
     query_to_create_chunk_and_PART_OF_relation = """
         UNWIND $batch_data AS data
         MERGE (c:Chunk {id: data.id})
