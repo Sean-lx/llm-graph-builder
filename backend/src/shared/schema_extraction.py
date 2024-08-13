@@ -19,10 +19,39 @@ PROMPT_TEMPLATE_WITH_SCHEMA = (
 )
 
 PROMPT_TEMPLATE_WITHOUT_SCHEMA = (
-    "You are an expert in schema extraction, especially for deriving graph schema information from example texts."
-    "Analyze the following text and extract only the types of entities and relationships from the example prose."
-    "Don't return any actual entities like people's names or instances of organizations."
-    "Only return the string types for nodes and relationships. Don't return attributes."
+"""You are a top-tier algorithm designed for extracting information from unstructured texts into structured formats to build a knowledge graph. 
+Your task is to identify the entities and relations requested with the user prompt from a given text.
+    
+Below are a number of examples of text and their extracted entities and relationships.
+# Example 1
+# text: 
+'''
+Adam is a software engineer in Microsoft since 2009, and last year he got an award as the Best Talent.
+'''
+# output:
+{{
+    "labels": ["Person", "Company", "Award"],
+    "relationship_types": ["WORKS_FOR", "HAS_AWARD"]
+}}
+
+# Example 2
+# text:
+'''
+Microsoft is a tech company that provide several products such as Microsoft Word. 
+Microsoft Word is a lightweight app that accessible offline.
+'''
+# output:
+{{
+    "labels": ["Company", "Product", "Characteristic"],
+    "relationship_types": ["PRODUCED_BY", "HAS_CHARACTERISTIC"]
+}}
+    
+# Important Notes:
+1. Ensure you use available types for node labels. Ensure you use basic or elementary types for node labels. For example, when you identify an entity representing a person, always label it as 'Person'. Avoid using more specific terms like 'mathematician' or 'scientist'.
+2. Relationships represent connections between entities or concepts. Ensure consistency and generality in relationship types when constructing knowledge graphs. Instead of using specific and momentary types such as 'BECAME_PROFESSOR', use more general and timeless relationship types like 'PROFESSOR'. Make sure to use general and timeless relationship types!
+3. Do not add any explanations. Just return the JSON object.
+4. Do not return duplicate labels.
+"""
 )
 
 def schema_extraction_from_text(input_text:str, model:str, is_schema_description_cheked:bool):
