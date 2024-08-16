@@ -24,6 +24,7 @@ def load_document_content(file_path):
         return PyMuPDFLoader(file_path)
     else:
         print("in else")
+        # valid mode names: {"single", "elements", "paged"}
         return UnstructuredFileLoader(file_path, encoding="utf-8", mode="elements")
     
 def get_documents_from_file_by_path(file_path,file_name):
