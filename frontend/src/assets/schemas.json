@@ -229,28 +229,14 @@
   },
   {
     "labels": [
-      "Action",
       "Author",
-      "Behavior",
       "Book",
       "Character",
-      "Conversation",
-      "Concept",
       "Date",
-      "Dialogue",
-      "Document",
-      "Event",
-      "Job",
-      "Location",
-      "Movement",
-      "Object",
-      "Organization",
-      "Person",
+      "Genre",
       "Place",
       "Publisher",
-      "Speech",
-      "Task",
-      "Work"
+      "Time"
     ],
     "relationshipTypes": [
       
