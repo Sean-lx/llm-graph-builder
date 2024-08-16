@@ -42,7 +42,14 @@ class CreateChunksofDocument:
             "\u3002",  # Ideographic full stop
             "",
         ]
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50, separators=separators)
+        chunk_size = int(os.environ.get('TEXT_SPLITTER_CHUNK_SIZE', 500))
+        chunk_overlap = int(os.environ.get('TEXT_SPLITTER_CHUNK_OVERLAP', 50))
+
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=chunk_size, 
+            chunk_overlap=chunk_overlap, 
+            separators=separators
+            )
 
         if 'page' in self.pages[0].metadata:
             chunks = []
