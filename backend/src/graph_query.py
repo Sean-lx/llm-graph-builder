@@ -22,8 +22,8 @@ QUERY_WITH_DOCUMENT = """
     WHERE d.fileName IN $document_names
     WITH docs, d ORDER BY d.createdAt DESC 
     CALL {{ WITH d
-      OPTIONAL MATCH chunks=(d)<-[:PART_OF]-(c:Chunk)
-      RETURN chunks, c LIMIT 50
+        OPTIONAL MATCH chunks=(d)<-[:PART_OF]-(c:Chunk)
+        RETURN chunks, c LIMIT 50
     }}
     WITH [] {query_to_change} AS paths
     CALL {{ WITH paths UNWIND paths AS path UNWIND nodes(path) as node RETURN collect(distinct node) as nodes }}
