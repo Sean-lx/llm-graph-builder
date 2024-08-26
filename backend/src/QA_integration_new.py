@@ -165,7 +165,7 @@ def get_sources_and_chunks(sources_used, docs):
     }
     return result
 
-def summarize_messages(llm,history, stored_messages):
+def summarize_messages(llm, history, stored_messages):
     if len(stored_messages) == 0:
         return False
     summarization_prompt = ChatPromptTemplate.from_messages(
@@ -239,7 +239,7 @@ def retrieve_documents(doc_retriever, messages):
     logging.info(f"Documents retrieved in {doc_retrieval_time:.2f} seconds") 
     return docs
 
-def process_documents(docs, question, messages, llm,model):
+def process_documents(docs, question, messages, llm, model):
     start_time = time.time()
     formatted_docs, sources = format_documents(docs,model)
     rag_chain = get_rag_chain(llm=llm)
@@ -344,12 +344,12 @@ def QA_RAG(graph, model, question, document_names, session_id, mode):
         else:
             retrieval_query = VECTOR_GRAPH_SEARCH_QUERY.format(no_of_entites=VECTOR_GRAPH_SEARCH_ENTITY_LIMIT)
 
-        llm, doc_retriever, model_version = setup_chat(model, graph, session_id, document_names,retrieval_query)
+        llm, doc_retriever, model_version = setup_chat(model, graph, session_id, document_names, retrieval_query)
         
         docs = retrieve_documents(doc_retriever, messages)
         
         if docs:
-            content, result, total_tokens = process_documents(docs, question, messages, llm,model)
+            content, result, total_tokens = process_documents(docs, question, messages, llm, model)
         else:
             content = "I couldn't find any relevant documents to answer your question."
             result = {"sources": [], "chunkdetails": []}
