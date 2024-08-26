@@ -86,7 +86,7 @@ def process_chunk_data(chunk_data):
         return chunk_properties
     except Exception as e:
         logging.error(f"chunkid_entities module: An error occurred while extracting the Chunk text from records: {e}")
- 
+
 def get_entities_from_chunkids(uri, username, password, chunk_ids):
     """
     Retrieve and process nodes and relationships from a graph database given a list of chunk IDs.
